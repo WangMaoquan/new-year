@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-primary: #ffd700;
+
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  --animate-float-up: float-up 20s linear infinite;
+  --animate-gradient-shift: gradient-shift 3s ease infinite;
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-time-pulse: time-pulse 1s ease-in-out infinite;
+  --animate-blink: blink 1s ease-in-out infinite;
+  --animate-fade-in-up: fade-in-up 1s ease-out;
+  --animate-rainbow: rainbow 3s linear infinite;
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(100vh) scale(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100vh) scale(1);
+      opacity: 0;
+    }
+  }
+  @keyframes gradient-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+    }
+    50% {
+      filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.9));
+    }
+  }
+  @keyframes time-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes rainbow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+}
