@@ -18,7 +18,7 @@
 
     if (diff <= 0) {
       isNewYear.value = true;
-      if (interval) clearInterval(interval);
+      if (interval) cancelAnimationFrame(interval);
       days.value = 0;
       hours.value = 0;
       minutes.value = 0;
@@ -30,6 +30,7 @@
     hours.value = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     minutes.value = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     seconds.value = Math.floor((diff % (1000 * 60)) / 1000);
+    interval = requestAnimationFrame(updateCountdown);
   };
 
   const formatNumber = (num: number): string => {
@@ -41,12 +42,11 @@
   };
 
   onMounted(() => {
-    updateCountdown();
-    interval = setInterval(updateCountdown, 1000);
+    interval = requestAnimationFrame(updateCountdown);
   });
 
   onUnmounted(() => {
-    if (interval) clearInterval(interval);
+    if (interval) cancelAnimationFrame(interval);
   });
 
   const message = computed(() => {
@@ -65,7 +65,7 @@
     <Fireworks v-if="isNewYear" />
 
     <div
-      class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
+      class="absolute -top-1 left-0 w-full h-full overflow-hidden pointer-events-none"
     >
       <div
         v-for="i in 50"
@@ -81,7 +81,7 @@
 
     <div class="relative z-10 text-center p-8 max-md:p-4">
       <h1
-        class="text-[clamp(4rem,15vw,12rem)] font-black m-0 bg-linear-to-tr from-[#ffd700] via-[#ffed4e] to-[#ffd700] bg-[length:200%_200%] bg-clip-text text-transparent animate-[gradient-shift_3s_ease_infinite,glow-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_40px_rgba(255,215,0,0.5)] tracking-[0.05em]"
+        class="text-[clamp(4rem,15vw,12rem)] font-black m-0 bg-linear-to-tr from-brand-[#ffd700] via-[#ffed4e] to-brand-[#ffd700] bg-size-[200%_200%] bg-clip-text text-transparent animate-[gradient-shift_3s_ease_infinite,glow-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_40px_rgba(255,215,0,0.5)] tracking-[0.05em]"
       >
         {{ isNewYear ? '2026' : '2026' }}
       </h1>
@@ -93,22 +93,26 @@
 
       <div
         v-if="!isNewYear"
-        class="flex items-center justify-center gap-[clamp(1rem,3vw,2rem)] my-12 flex-wrap max-md:gap-2"
+        class="grid md:flex grid-cols-2 items-center justify-center gap-[clamp(1rem,3vw,2rem)] my-12"
       >
         <div class="flex flex-col items-center gap-2">
           <div
-            class="tabular-nums text-[clamp(3rem,8vw,6rem)] font-bold text-white bg-white/10 backdrop-blur-[10px] border-2 border-[rgba(255,215,0,0.3)] rounded-2xl px-[clamp(1.5rem,4vw,3rem)] py-[clamp(1rem,3vw,2rem)] min-w-[clamp(80px,20vw,140px)] shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_0_20px_rgba(255,215,0,0.1)] animate-time-pulse"
+            class="tabular-nums relative text-[clamp(3rem,8vw,6rem)] font-bold text-white bg-white/10 backdrop-blur-[10px] border-2 border-[rgba(255,215,0,0.3)] rounded-2xl px-[clamp(1.5rem,4vw,3rem)] py-[clamp(1rem,3vw,2rem)] min-w-[clamp(80px,20vw,140px)] shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_0_20px_rgba(255,215,0,0.1)] animate-time-pulse"
           >
             {{ formatNumber(days) }}
+            <span
+              class="md:hidden absolute -right-6 top-1/2 -translate-y-1/2 text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light"
+              >:</span
+            >
           </div>
           <div
-            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-[0.1em]"
+            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-widest-[0.1em]"
           >
             天
           </div>
         </div>
         <div
-          class="text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
+          class="hidden md:block text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
         >
           :
         </div>
@@ -119,30 +123,34 @@
             {{ formatNumber(hours) }}
           </div>
           <div
-            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-[0.1em]"
+            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-widest-[0.1em]"
           >
             时
           </div>
         </div>
         <div
-          class="text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
+          class="hidden md:block text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
         >
           :
         </div>
         <div class="flex flex-col items-center gap-2">
           <div
-            class="tabular-nums text-[clamp(3rem,8vw,6rem)] font-bold text-white bg-white/10 backdrop-blur-[10px] border-2 border-[rgba(255,215,0,0.3)] rounded-2xl px-[clamp(1.5rem,4vw,3rem)] py-[clamp(1rem,3vw,2rem)] min-w-[clamp(80px,20vw,140px)] shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_0_20px_rgba(255,215,0,0.1)] animate-time-pulse"
+            class="tabular-nums relative text-[clamp(3rem,8vw,6rem)] font-bold text-white bg-white/10 backdrop-blur-[10px] border-2 border-[rgba(255,215,0,0.3)] rounded-2xl px-[clamp(1.5rem,4vw,3rem)] py-[clamp(1rem,3vw,2rem)] min-w-[clamp(80px,20vw,140px)] shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_0_20px_rgba(255,215,0,0.1)] animate-time-pulse"
           >
             {{ formatNumber(minutes) }}
+            <span
+              class="md:hidden absolute -right-6 top-1/2 -translate-y-1/2 text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light"
+              >:</span
+            >
           </div>
           <div
-            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-[0.1em]"
+            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-widest-[0.1em]"
           >
             分
           </div>
         </div>
         <div
-          class="text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
+          class="hidden md:block text-[clamp(2rem,6vw,4rem)] text-[rgba(255,215,0,0.6)] font-light -mx-2 animate-blink max-md:m-0"
         >
           :
         </div>
@@ -153,7 +161,7 @@
             {{ formatNumber(seconds) }}
           </div>
           <div
-            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-[0.1em]"
+            class="text-[clamp(0.9rem,2vw,1.2rem)] text-[rgba(255,215,0,0.9)] font-medium uppercase tracking-widest-[0.1em]"
           >
             秒
           </div>
